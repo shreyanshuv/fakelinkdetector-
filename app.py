@@ -1,0 +1,76 @@
+from flask import Flask, render_template, request
+import re
+from urllib.parse import urlparse
+import tldextract
+
+app = Flask(__name__)
+
+# --- Rule-based detection ---
+SUSPICIOUS_TLDS = {"zip", "mov", "click", "xyz", "top", "cf", "tk", "ml", "ga"}
+SENSITIVE_KEYWORDS = {"verify", "login", "update", "secure", "account", "billing", "bank", "password"}
+URL_SHORTENERS = {"bit.ly", "t.co", "goo.gl", "tinyurl.com", "shorturl.at"}
+
+def analyze_url(url):
+    parsed = urlparse(url if "://" in url else "http://" + url)
+    domain_info = tldextract.extract(parsed.netloc)
+    domain = f"{domain_info.domain}.{domain_info.suffix}"
+
+    score = 0
+    reasons = []
+
+    # Heuristic checks
+    if parsed.scheme != "https":
+        score += 1
+        reasons.append("Does not use HTTPS")
+
+    if any(keyword in url.lower() for keyword in SENSITIVE_KEYWORDS):
+        score += 2
+        reasons.append("Contains sensitive keywords")
+
+    if domain_info.suffix in SUSPICIOUS_TLDS:
+        score += 2
+        reasons.append(f"Suspicious top-level domain '.{domain_info.suffix}'")
+
+    if domain.lower() in URL_SHORTENERS:
+        score += 2
+        reasons.append("URL shortener detected")
+
+    if re.search(r"\d{1,3}(?:\.\d{1,3}){3}", parsed.netloc):
+        score += 3
+        reasons.append("Uses IP address instead of domain")
+
+    if len(domain_info.domain) <= 3 or any(ch.isdigit() for ch in domain_info.domain):
+        score += 1
+        reasons.append("Unusual or numeric domain name")
+
+    # Verdict logic
+    if score >= 5:
+        verdict = "Likely Malicious"
+    elif score >= 3:
+        verdict = "Suspicious"
+    elif score >= 1:
+        verdict = "Low Risk"
+    else:
+        verdict = "Likely Safe"
+
+    return {
+        "url": url,
+        "domain": domain,
+        "score": score,
+        "verdict": verdict,
+        "reasons": reasons,
+    }
+
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    result = None
+    if request.method == "POST":
+        url = request.form.get("url", "")
+        if url:
+            result = analyze_url(url)
+    return render_template("index.html", result=result)
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)

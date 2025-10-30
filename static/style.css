@@ -1,0 +1,86 @@
+body {
+  background: linear-gradient(to right, #a5d8ff, #cfe9ff);
+  font-family: "Poppins", Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.card {
+  background: #ffffff;
+  width: 500px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h1 {
+  color: #0077b6;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input[type="url"] {
+  padding: 12px;
+  border: 2px solid #0077b6;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input[type="url"]:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+}
+
+button {
+  background: #0077b6;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00b4d8;
+}
+
+.result-section {
+  text-align: left;
+  margin-top: 25px;
+}
+
+.verdict.likely-safe { color: #10b981; }
+.verdict.low-risk { color: #f59e0b; }
+.verdict.suspicious { color: #facc15; }
+.verdict.likely-malicious { color: #ef4444; }
+
+pre {
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
