@@ -11,10 +11,11 @@
       <h1>🔎 Fake Link Detector</h1>
       <p class="subtitle">Analyze any URL to detect if it may be fake or malicious</p>
 
-      <form method="post">
-        <input type="url" name="url" placeholder="Enter a URL (e.g. https://example.com)" required>
-        <button type="submit">Check</button>
-      </form>
+     <form method="POST" action="/">
+  <input type="text" name="url" placeholder="Enter a URL" required>
+  <button type="submit">Check</button>
+</form>
+
 
       {% if result %}
         <div class="result-section">
@@ -38,3 +39,4 @@
   </div>
 </body>
 </html>
+
